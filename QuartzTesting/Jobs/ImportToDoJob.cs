@@ -5,6 +5,7 @@ using QuartzTesting.Models;
 
 namespace QuartzTesting.Jobs
 {
+    [DisallowConcurrentExecution]
     public class ImportToDoJob : IJob
     {
         private readonly ToDoContext _todoContext;
@@ -22,14 +23,14 @@ namespace QuartzTesting.Jobs
             {
                 Name = t.Name
             }).ToListAsync();
-    
-            var alreadyImported = await _importedToDoContext.ImportedTodos.AsNoTracking().Select(t=> new TodoDto
+
+            var alreadyImported = await _importedToDoContext.ImportedTodos.AsNoTracking().Select(t => new TodoDto
             {
                 Name = t.Name
             }).ToListAsync();
-        
-            var union = todosToImport.ExceptBy(alreadyImported.Select(t=>t.Name),t=>t.Name);
-            
+
+            var union = todosToImport.ExceptBy(alreadyImported.Select(t => t.Name), t => t.Name);
+
             var notImported = union.Select(t => new ImportedTodo
             {
                 Name = t.Name

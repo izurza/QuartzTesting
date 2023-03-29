@@ -5,6 +5,7 @@ using QuartzTesting.Models;
 
 namespace QuartzTesting.Jobs
 {
+    [DisallowConcurrentExecution]
     public class CreateToDoJob : IJob
     {
         private readonly ToDoContext _todoContext;
@@ -17,18 +18,16 @@ namespace QuartzTesting.Jobs
 
             JobDataMap dataMap = context.JobDetail.JobDataMap;
             string? jobString = dataMap.GetString("PassingData");
-            int jobInt = dataMap.GetInt("PassingData1");
-            bool jobBool = dataMap.GetBoolean("PassingData2");
 
             Random random = new Random();
             Console.WriteLine("crear To do");
-            List<string> args = new List<string>() {"1","2","3","4","5","6","7" };
+            List<string> args = new List<string>() { "1", "2", "3", "4", "5", "6", "7" };
             await _todoContext.Todos.AddAsync(new Todo()
             {
                 Name = args[random.Next(args.Count)]
             });
             await _todoContext.SaveChangesAsync();
-            
+
         }
 
 
